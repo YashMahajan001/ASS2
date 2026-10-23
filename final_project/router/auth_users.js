@@ -15,7 +15,7 @@ const authenticatedUser = (username, password) => {
   return validUsers.length > 0;
 };
 
-// Task 7: Only registered users can login
+// Task 7 / 8: Login endpoint
 regd_users.post("/login", (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
@@ -39,7 +39,7 @@ regd_users.post("/login", (req, res) => {
   }
 });
 
-// Task 8: Add or modify a book review
+// Task 8 / 9: Add or modify a book review (returns message and reviews)
 regd_users.put("/auth/review/:isbn", (req, res) => {
   const isbn = req.params.isbn;
   const review = req.query.review || req.body.review;
@@ -55,13 +55,16 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 
   if (books[isbn]) {
     books[isbn].reviews[username] = review;
-    return res.status(200).send(`The review for the book with ISBN ${isbn} has been added/updated.`);
+    return res.status(200).json({
+      message: `The review for the book with ISBN ${isbn} has been added/updated.`,
+      reviews: books[isbn].reviews
+    });
   } else {
     return res.status(404).json({ message: `Book with ISBN ${isbn} not found` });
   }
 });
 
-// Task 9: Delete a book review
+// Task 9 / 10: Delete a book review
 regd_users.delete("/auth/review/:isbn", (req, res) => {
   const isbn = req.params.isbn;
   const username = req.session && req.session.authorization ? req.session.authorization.username : (req.user ? req.user.username : null);
